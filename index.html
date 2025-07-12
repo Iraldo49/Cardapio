@@ -1,278 +1,454 @@
-const menu = document.getElementById("menu")
-const cartBtn = document.getElementById("cart-btn")
-const cartModal = document.getElementById("cart-modal")
-const cartItemsContainer = document.getElementById("cart-items")
-const cartTotal = document.getElementById("cart-total")
-const checkoutBtn = document.getElementById("checkout-btn")
-const closeModalBtn = document.getElementById("close-modal-btn")
-const cartCounter = document.getElementById("cart-count")
-const nameInput = document.getElementById("name")
-const nameWarn = document.getElementById("name-warn")
+<!DOCTYPE html>
+<html lang="en">
 
-let cart = [];
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-//Abrir o modal do pedido
-cartBtn.addEventListener("click", function(){
-    updateCartModal();
-    cartModal.style.display = "flex"
-})
+    <link href="assets/freepik__background__84591.png" rel="icon">
+    <link href="assets/freepik__background__84591.png" rel="apple-touch-icon">
 
-//Fechar o modal quando clicar fora
-cartModal.addEventListener("click", function(event){
-    if(event.target === cartModal){
-        cartModal.style.display = "none"
-    }
-})
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
 
-closeModalBtn.addEventListener("click", function(){
-    cartModal.style.display ="none"
-})
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./styles/output.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 
-menu.addEventListener("click", function(event){
-    let parentButton = event.target.closest(".add-to-cart-btn")
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <title>mr.chicken</title>
+</head>
 
-    if(parentButton){
-        const name = parentButton.getAttribute("data-name")
-        const price = parseFloat(parentButton.getAttribute("data-price")) 
-        addToCart(name, price)
-    }
-})
+<body>
+    <!--Header-->
+    <header class="w-full h-[420px]  bg-zinc-900 bg-home bg-cover bg-center">
+        <div class="w-full h-full flex flex-col justify-center items-center">
+            <img src="./assets/5.png" alt=" Logo King Burger"
+                class="w-32 h-32 rounded-full shadow-lg hover:scale-110 duration-200" />
+                <!-- <div class="w-24 h-1 bg-black mx-auto mt-2 mb-2"></div> -->
+                <!-- <h1 class="text-4xl mt-4 mb-2 text-white font-serif">King Burger</h1> -->
+                <!-- <span class="text-white font-medium">Hamburgueria Artesanal</span> -->
+                <span class="text-white mt-2 font-medium text-center">Rua da Costa do sol, Polana Canico "A"<br>Maputo, Moçambique</span>
+                    <div class="hero-container" data-aos="fade-in">
+                      <p class="text-white mt-5 font-medium text-center"><span class="typed" 
+                        data-typed-items=" Usa o nosso app para pedir, 
+                        e ganha 10% de desconto, Como posso te ajudar?  "></span></p>
+                        
+                    </div>
 
-//Funcao para adicionar no pedido
-function addToCart(name, price){
-    const existingItem = cart.find(item => item.name === name)
-
-    //se o item ja existe, aumenta apenas a quantidade + 1
-    if(existingItem){
-        existingItem.quantity += 1;
-    }else{
-        cart.push({
-            name,
-            price,
-            quantity: 1,
-       })  
-    }
-    updateCartModal()
-  
-}
-//Atualiza o pedido
-function updateCartModal() {
-    cartItemsContainer.innerHTML = "";
-    let total = 0;
-
-    cart.forEach(item => {
-        const cartItemElement = document.createElement("div");
-        cartItemElement.classList.add("flex", "justify-between", "mt-4", "flex-col")
-
-        cartItemElement.innerHTML = `
-            <div class="flex items-center justify-between">
+                
+                <div class="bg-green-600 px-4 py-2 rounded-full mt-5 shadow-lg" id="date-span">
+                    <span class="text-white font-medium">14:00h as 22:00h</span>
+                </div>
+        </div>
+    </header>
+    <!--FIM Header-->
+    <h2 class="text-xl md:text-2xl mt-4 font-bold text-center mb-8 text-gray-600 font-serif">
+        Conheça o nosso menu
+    </h2>
+    <div class="w-24 h-1 bg-black mx-auto mb-12"></div>
+    <!--INICIO DO MENU-->
+    <div id="menu">
+        <!-- <main class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-10 mx-auto max-w-7xl px-2 mb-16"> -->
+            <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-10 mx-auto max-w-7xl px-2 mb-16">
+            <!--PRODUTO ITEM-->
+            <div class="flex gap-2">
+                <img src="./assets/hamb-8.png" alt="Hamburger Smash"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
                 <div>
-                   <p class="font-medium">${item.name}</p> 
-                   <p> Quantidade: ${item.quantity}</p> 
-                   <p class="font-medium mt-2">MTN ${item.price.toFixed(2)}</p> 
-                </div> 
-                <button class="remove-form-cart-btn" data-name="${item.name}" title="Remover">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
+                    <p class="font-bold">Hamburger Simples</p>
+                    <ul class="text-sm list-disc list-inside ">
+                        <p class="text-sm">Hamburger, salada, queijo e o molho especial do King.</p>
+                    </ul>
+                    <div class="flex items-center gap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 99.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Hamburger Simples"
+                            data-price="99.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-        `
-        total += item.price * item.quantity;
-        
-        cartItemsContainer.appendChild(cartItemElement)
-    })
+            <!--FIM PRODUTO ITEM-->
+            <!--PRODUTO ITEM2-->
+            <div class="flex gap-2">
+                <img src="./assets/hamb-4.png" alt="Hamburger Completo"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div>
+                    <p class="font-bold"> Hamburger Completo</p>
+                    <p class="text-sm">Hamburger, salada, queijo, ovo e molho especial do King.</p>
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 129.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Hamburger Completo"
+                            data-price="129.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--FIM PRODUTO ITEM2-->
 
-    cartTotal.textContent = total.toLocaleString("pt-PT", {
-            style: "currency",
-           currency: "MZN"
-        });
-    cartCounter.innerHTML = cart.length;
-}
+            <!--PRODUTO ITEM3-->
+            <div class="flex gap-2">
+                <img src="./assets/hamb-3.png" alt="Hamburger Duplo"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div>
+                    <p class="font-bold">Hamburger Completo King</p>
+                    <p class="text-sm">Hamburger, salada, queijo, ovo com batatas e molho especial do King.</p>
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 149.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Hamburger Completo King"
+                            data-price="149.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--FIM PRODUTO ITEM3-->
+               <!--PRODUTO ITEM3-->
+               <div class="flex gap-2">
+                <img src="./assets/hamb-5.png" alt="Hamburger Duplo"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div>
+                    <p class="font-bold">Hamburger Completo ex.</p>
+                    <p class="text-sm">Hamburger, salada, queijo, ovo, molho especial do King e porção exatra de batatas.</p>
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 169.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Hamburger Completo ex."
+                            data-price="169.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--FIM PRODUTO ITEM3-->
+               <!--PRODUTO ITEM3-->
+               <div class="flex gap-2">
+                <img src="./assets/hamb-1.png" alt="Hamburger Duplo"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div>
+                    <p class="font-bold">Hamburger Duplo</p>
+                    <p class="text-sm">Duplo Hamburger, salada, duplo, queijo, ovo e o molho especial do King.</p>
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 169.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Hamburger Duplo"
+                            data-price="169.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--FIM PRODUTO ITEM3-->
+            <!--PRODUTO ITEM3-->
+            <div class="flex gap-2">
+                <img src="./assets/hamb-3.png" alt="Hamburger Duplo"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div>
+                    <p class="font-bold">Hamburger Duplo King</p>
+                    <p class="text-sm">Duplo Hamburger, salada, duplo queijo, ovo, molho especial do King e porção exatra de batatas.</p>
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 199.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Hamburger Duplo King"
+                            data-price="199.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--FIM PRODUTO ITEM3-->
+            <!--PRODUTO ITEM4-->
+            <!-- <div class="flex gap-2">
+                <img src="./assets/hamb-4.png" alt="Hamburger Duplo"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div>
+                    <p class="font-bold"> Prego no pao</p>
+                    <p class="text-sm">O hambúrguer (do inglês hamburger), também conhecido como hamburgo,
+                        hamburguesa ou sanduíche de carne, </p>
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 199.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Prego" data-price="199.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div> -->
+            <!--FIM PRODUTO ITEM4-->
+                  <!--PRODUTO ITEM4-->
+                  <div class="flex gap-2">
+                    <img src="./assets/side-view-shawarma-with-fried-potatoes-board-cookware.jpg" alt="Hamburger Duplo"
+                        class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                    <div>
+                        <p class="font-bold"> SHAWARMA WRAP DE BEEF</p>
+                        <p class="text-sm">Shawarma de beef com molho especial do king, cebola,salada.</p>
+                        <div class="flex items-center grap-2 justify-between mt-3">
+                            <p class="font-bold text-lg">MTN 149.99</p>
+                            <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Prego" data-price="149.99">
+                                <i class="fa fa-cart-plus text-lg text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--FIM PRODUTO ITEM4-->
+                      <!--PRODUTO ITEM4-->
+            <div class="flex gap-2">
+                <img src="./assets/cachorro-quente-classico-com-ketchup-e-molho-de-mostarda-isolado-em-fundo-branco_1.jpg" alt="Hamburger Duplo"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div>
+                    <p class="font-bold">CACHORRO QUENTE</p>
+                    <p class="text-sm">Rachel, pure de batata, molho especial do king e salada</p>
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 119.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Prego" data-price="199.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--FIM PRODUTO ITEM4-->
+                 <!--PRODUTO ITEM4-->
+                 <div class="flex gap-2">
+                    <img src="./assets/high-angle-shot-basket-delicious-fried-chicken-black-surface.jpg" alt="Hamburger Duplo"
+                        class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                    <div>
+                        <p class="font-bold">ASINHAS</p>
+                        <p class="text-sm">4 Asas do frango mais batatas</p>
+                        <div class="flex items-center grap-2 justify-between mt-3">
+                            <p class="font-bold text-lg">MTN 99.99</p>
+                            <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Prego" data-price="99.99">
+                                <i class="fa fa-cart-plus text-lg text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--FIM PRODUTO ITEM4-->
+                              <!--PRODUTO ITEM4-->
+                              <div class="flex gap-2">
+                                <img src="./assets/sausages-grill-salad.jpg" alt="Hamburger Duplo"
+                                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                                <div>
+                                    <p class="font-bold">RACHEL</p>
+                                    <p class="text-sm">Rachel frito</p>
+                                    <div class="flex items-center grap-2 justify-between mt-3">
+                                        <p class="font-bold text-lg">MTN 34.99</p>
+                                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Prego" data-price="34.99">
+                                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--FIM PRODUTO ITEM4-->
+                                          <!--PRODUTO ITEM4-->
+                 <div class="flex gap-2">
+                    <img src="./assets/close-up-com-deliciosas-batatas-fritas-francesas.jpg" alt="Hamburger Duplo"
+                        class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                    <div>
+                        <p class="font-bold">DOSE DE BATATAS</p>
+                        <p class="text-sm">Molho especial do king.</p>
+                        <div class="flex items-center grap-2 justify-between mt-3">
+                            <p class="font-bold text-lg">MTN 59.99</p>
+                            <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Prego" data-price="59.99">
+                                <i class="fa fa-cart-plus text-lg text-white"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--FIM PRODUTO ITEM4-->
+        </main>
+        <h2 class="text-xl md:text-2xl mt-4 font-bold text-center mb-8 text-gray-600 font-serif">
+            Bebidas
+        </h2>
+        <div class="w-24 h-1 bg-yellow-500 mx-auto mb-12"></div>
+        <!--GRID DAS BEBIDAS-->
+        <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-10 mx-auto max-w-7xl px-2 mb-16" id="menu"> -->
+            <!--BEBIDA ITEM-->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-10 mx-auto max-w-7xl px-2 mb-16" id="menu">
+            <!-- <div class="flex gap-2 w-full">
+                <img src="./assets/refri-1.png" alt="Coca Lata"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div class="w-full">
+                    <p class="font-bold">Coca Cola Lata 330ml</p>
 
-//funcao para remover o item do pedido
-cartItemsContainer.addEventListener("click", function (event){
-    if(event.target.classList.contains("remove-form-cart-btn")){
-        const name = event.target.getAttribute("data-name")
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 44.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Coca Lata"
+                            data-price="44.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div> -->
+            <!--FIM BEBIDA ITEM-->
 
-        removeItemCart(name);
-    }
-})
+            <!--BEBIDA ITEM-->
+            <!-- <div class="flex gap-2 w-full">
+                <img src="./assets/refri-8.png" alt="Guarana Lata"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div class="w-full">
+                    <p class="font-bold">Cappy Delight Manga 350ml</p>
 
-function removeItemCart(name){
-    const index = cart.findIndex(item => item.name === name);
-
-    if (index !== -1){
-        const item = cart[index];
-
-        if(item.quantity > 1){
-            item.quantity -=1;
-            updateCartModal();
-            return;
-        }
-
-        cart.splice(index, 1);
-        updateCartModal();
-    }
-}
-
-//validacao do input
-nameInput.addEventListener("input", function(event){
-    let inputValue = event.target.value;
-
-    if(inputValue !== ""){
-        nameInput.classList.remove("border-red-500")
-        nameWarn.classList.add("hidden")
-    }
-})
-//finalizar Pedido
-checkoutBtn.addEventListener("click", function(){
-
-    // const isOpen = checkRestaurantOpen();
-    // if(!isOpen){
-    //     alert("TAKE AWAY FECHADO NO MOMENTO!")
-    //     return;
-    // }
-    const isOpen = checkRestaurantOpen();
-    if(!isOpen){
-        Toastify({
-            // text: "Ops o take away esta fechado!",
-            text: "Ops! Ainda nao estamos a aceitar encomendas. Aplicacao estara disponivel em breve!",
-            duration: 3000,
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 44.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Cappy Delight Manga 350ml"
+                            data-price="44.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div> -->
+            <!--FIM BEBIDA ITEM-->
             
-            close: true,
-            gravity: "top", // `top` or `bottom`
-            position: "right", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-              background: "#ef4444",
-            },
-          }).showToast();
-        return;
-    }
+            <!--BEBIDA ITEM-->
+            <!-- <div class="flex gap-2 w-full">
+                <img src="./assets/refri-4.png" alt="Guarana Lata"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div class="w-full">
+                    <p class="font-bold">Twist Lata 330ml</p>
 
-    if(cart.length === 0) return;
-    if(nameInput.value === ""){
-        nameWarn.classList.remove("hidden")
-        nameInput.classList.add("border-red-500")
-        return;
-    }
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 44.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Guarana Lata"
+                            data-price="44.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div> -->
+            <!--FIM BEBIDA ITEM-->
+            <!--BEBIDA ITEM-->
+            <div class="flex gap-2 w-full">
+                <img src="./assets/sac-90357626.jpg" alt="Guarana Lata"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div class="w-full">
+                    <p class="font-bold">Refresco a Garafa</p>
 
-    //Enviar pedido do api whats
-//     const cartItems = cart.map((item) => {
-//         return (
-//             `🍔 *${item.name}*\n` +
-//             `   ➤ Quantidade: ${item.quantity}\n` +
-//             `   ➤ Preço unitário: MZN ${item.price}\n` +
-//             `   ➤ Subtotal: MZN ${(item.price * item.quantity).toFixed(2)}\n\n`
-//         );
-//     }).join("");
-    
-//     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    
-//     const message = encodeURIComponent(
-//         "🛒 *PEDIDO MR. CHICKEN* 🛒\n\n" +
-//         cartItems +
-//         "__________________________________\n" +
-//         `💰 *TOTAL: MZN ${total.toFixed(2)}*\n\n` +
-//         `📝 *Cliente:* ${nameInput.value}\n` +
-//         `📍 *Endereço:* Rua da Costa do sol, Polana Canico "A"\n\n` +
-//         "🕒 *Horário de funcionamento:*\n" +
-//         "Segunda a Domingo - 10:00 às 22:00"
-//     );
-    
-//     const phone = "869937027";
-//     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-    
-//     cart = [];
-//     updateCartModal();
-// })
-// Função para formatar a data atual no formato dd/mm/aaaa
-function getCurrentDateTime() {
-    const now = new Date();
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const year = now.getFullYear();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    return `${day}/${month}/${year} às ${hours}:${minutes}`;
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 29.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Guarana Lata"
+                            data-price="29.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--FIM BEBIDA ITEM-->
+            <!--BEBIDA ITEM-->
+            <!-- <div class="flex gap-2 w-full">
+                <img src="./assets/refri-5.png" alt="Guarana Lata"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div class="w-full">
+                    <p class="font-bold">Sprite Lata 330ml</p>
+
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 44.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Guarana Lata"
+                            data-price="44.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div> -->
+            <!--FIM BEBIDA ITEM-->
+            
+            <!--BEBIDA ITEM-->
+            <!-- <div class="flex gap-2 w-full">
+                <img src="./assets/refri-6.png" alt="Guarana Lata"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div class="w-full">
+                    <p class="font-bold">Fanta Ananás Lata 330ml</p>
+
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 44.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Fanta Ananás Lata 330ml"
+                            data-price="44.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div> -->
+            <!--FIM BEBIDA ITEM-->
+            
+            <!--BEBIDA ITEM-->
+            <div class="flex gap-2 w-full">
+                <img src="./assets/COM3318.jpg" alt="Guarana Lata"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+                <div class="w-full">
+                    <p class="font-bold">Cappy Sumo Laranja 500ml</p>
+
+                    <div class="flex items-center grap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">MTN 69.99</p>
+                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Cappy Sumo Laranja 330ml"
+                            data-price="44.99">
+                            <i class="fa fa-cart-plus text-lg text-white"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!--FIM BEBIDA ITEM-->
+            
+        </div>
+        <!--FIM GRID DAS BEBIDAS-->
+    </div>
+
+    <!--MODAL CART-->
+    <div class="bg-black/60 w-full h-full fixed top-0 left-0 z-50  items-center justify-center hidden" id="cart-modal">
+        <div class="bg-white p-5 rounded-md w-full max-w-[90%] md:max-w-[600px]">
+            <h2 class=" text-center font-bold text-2xl mb-2">Meu Pedido</h2>
+            <div id="cart-items" class="flex justify-between mb-2 flex-col"></div>
+            <hr/>
+            <p class="font-bold mt-4">Total <span id="cart-total">0.00</span></p>
+            <hr/>
+            <p class="font-bold mt-4">Informe o nome do cliente:</p>
+            <input type="text" placeholder="Por favor informe o teu nome..." id="name"
+                class="w-full border-2 p-1 rounded my-1" />
+            <p class="text-red-500 hidden" id="name-warn">Por favor informe o teu nome</p>
+            <div class="flex items-center justify-between mt-5 w-full">
+                <!-- <button id="close-modal-btn">Fechar</button> -->
+                <button type="button" id="close-modal-btn" class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+                    <span class="sr-only">Close menu</span>
+                    <!-- Heroicon name: outline/x -->
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                <!-- <button id="checkout-btn" class="bg-green-500 text-white px-4 py-1 rounded">Finalizar Pedido</button> -->
+                <div class="flex justify-between mt-4">
+                    <!-- <button id="print-bt" class="bg-blue text-white px-4 left-10 py-2 rounded">Imprimir </button> -->
+                    <button id="checkout-btn" class="bg-green-500 text-white px-4 py-1 rounded">Finalizar Pedido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--FIM MODAL CART-->
+
+    <!--BUTTON CART FOOTER-->
+    <footer class="w-full bg-black py-3 fixed bottom-0 z-40 flex items-center justify-center">
+        <button class="flex items-center gap-2 text-white font-bold" id="cart-btn">
+            (<span id="cart-count">0</span>)
+            Ver meu Pedido
+            <i class="fa fa-cart-plus text-lg text-white"></i>
+        </button>
+    </footer>
+    <!--FIM BUTTON CART FOOTER-->
+    <script src="./js/script.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <Script>
+        AOS.init();
+
+const typedElement = document.querySelector('.typed');
+if (typedElement) {
+ const typedItems = typedElement.getAttribute('data-typed-items');
+ const items = typedItems.split(',').map(item => item.trim());
+
+ new Typed('.typed', {
+   strings: items,
+   typeSpeed: 50,
+   backSpeed: 30,
+   backDelay: 2000,
+   loop: true
+ });
 }
+   </Script>
+</body>
 
-const cartItems = cart.map((item) => {
-    return (
-        `🍔 ${item.name}\n` +
-        `   ├─ Quantidade: ${item.quantity}\n` +
-        `   └─ Preço: MZN ${item.price.toFixed(2).replace('.', ',')}\n\n`
-    );
-}).join("");
-
-const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-const total = subtotal;
-
-const message = encodeURIComponent(
-    `🍗 *TAKE AWAY MR. CHICKEN* 🍗\n\n` +
-    `📍 *Endereço:* Rua da Costa do Sol, Polana Caniço A, Maputo\n` +
-    `📞 *Telefone:* +258 86 993 7027\n` +
-    `📧 *Email:* xxxxxxx@gmail.com\n\n` +
-    `════════════════════\n` +
-    `📋 *DETALHES DO PEDIDO*\n` +
-    `👤 *Cliente:* ${nameInput.value}\n` +
-    `📅 *Data/Hora:* ${getCurrentDateTime()}\n\n` +
-    `════════════════════\n` +
-    `🛒 *ITENS DO PEDIDO*\n${cartItems}\n` +
-    `════════════════════\n` +
-    `💲 *Subtotal:* MZN ${subtotal.toFixed(2).replace('.', ',')}\n` +
-    `💰 *Total a Pagar:* MZN ${total.toFixed(2).replace('.', ',')}\n\n` +
-    `════════════════════\n` +
-    `💳 *FORMAS DE PAGAMENTO*\n` +
-    `📱 *Mpesa:* 19156 – Banca Muabsa\n` +
-    `💸 *Emola:* 45963 – Banca Muabsa\n\n` +
-    `════════════════════\n` +
-    `🙏 *Agradecemos a sua preferência!*\n` +
-    `🍟 *Volte sempre ao Mr. Chicken!*`
-);
-
-const phone = "869937027";
-window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-
-cart = [];
-updateCartModal();
-})
-//     const cartItems = cart.map((item) => {
-//         return (
-//             `${item.name} Quantidade: (${item.quantity}) Preco: MZN${item.price} |`
-//         )
-//     }).join("")
-
-//     const message = encodeURIComponent(cartItems)
-//     const phone = "869937027"
-
-//     window.open(`https://wa.me/${phone}?text=${message} Nome: ${nameInput.value}`, "_blank")
-
-//     cart = [];
-//     updateCartModal();
-// })
-
-// Função para verificar se o restaurante está aberto
-function checkRestaurantOpen() {
-    const data = new Date(); 
-    const hora = data.getHours();
-
-    // Retorna true se o restaurante estiver aberto, false caso contrário
-    return hora >= 10 && hora < 22;
-}
-
-// Função para atualizar a interface do usuário com base no status do restaurante
-function updateRestaurantStatus() {
-    const spanItem = document.getElementById("date-span");
-    const isOpen = checkRestaurantOpen(); // Chama a função para verificar se está aberto
-
-    if (isOpen) {
-        spanItem.classList.remove("bg-red-500" );
-        spanItem.classList.add("bg-green-600");
-    } else {
-        spanItem.classList.remove("bg-green-600");
-        spanItem.classList.add("bg-red-500");
-    }
-}
-
-// Chamar a função para atualizar o status do restaurante na interface do usuário
-updateRestaurantStatus();
+</html>
