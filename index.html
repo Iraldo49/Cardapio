@@ -1,191 +1,278 @@
-<!DOCTYPE html>
-<html lang="en">
+const menu = document.getElementById("menu")
+const cartBtn = document.getElementById("cart-btn")
+const cartModal = document.getElementById("cart-modal")
+const cartItemsContainer = document.getElementById("cart-items")
+const cartTotal = document.getElementById("cart-total")
+const checkoutBtn = document.getElementById("checkout-btn")
+const closeModalBtn = document.getElementById("close-modal-btn")
+const cartCounter = document.getElementById("cart-count")
+const nameInput = document.getElementById("name")
+const nameWarn = document.getElementById("name-warn")
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+let cart = [];
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"/>
+//Abrir o modal do pedido
+cartBtn.addEventListener("click", function(){
+    updateCartModal();
+    cartModal.style.display = "flex"
+})
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="./styles/output.css"/>
-    <title>tongasBBQ</title>
-</head>
+//Fechar o modal quando clicar fora
+cartModal.addEventListener("click", function(event){
+    if(event.target === cartModal){
+        cartModal.style.display = "none"
+    }
+})
 
-<body>
-    <!--Header-->
-    <header class="w-full h-[420px]  bg-zinc-900 bg-home bg-cover bg-center">
-        <div class="w-full h-full flex flex-col justify-center items-center">
-            <img src="./assets/tongas.jpeg" alt=" Logo TongsBBQ"
-                class="w-32 h-32 rounded-full shadow-lg hover:scale-110 duration-200" />
-            <h1 class="text-4xl mt-4 mb-2 font-bold text-white">
-                Tonga's BBQ
-            </h1>
-            <span class="text-white font-medium"> Rua Carlos cardoso, Polana anico "A"</span>
-            <div class="bg-green-600 px-4 py-1 rounded-lg mt-5" id="date-span">
-                <span class="text-white font-medium">Seg a Dom - 16:00 as 22:00</span>
-            </div>
-        </div>
-    </header>
-    <!--FIM Header-->
-    <h2 class="text-2xl md:text-3xl font-bold text-center mt-9 mb-6">
-        Conheca o nosso menu
-    </h2>
-    <!--INICIO DO MENU-->
-    <div id="menu">
-        <main class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-10 mx-auto max-w-7xl px-2 mb-16">
-            <!-- <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-10 mx-auto max-w-7xl px-2 mb-16"> -->
-            <!--PRODUTO ITEM-->
-            <div class="flex gap-2">
-                <img src="./assets/hamb-1.png" alt="Hamburger Smash"
-                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
+closeModalBtn.addEventListener("click", function(){
+    cartModal.style.display ="none"
+})
+
+menu.addEventListener("click", function(event){
+    let parentButton = event.target.closest(".add-to-cart-btn")
+
+    if(parentButton){
+        const name = parentButton.getAttribute("data-name")
+        const price = parseFloat(parentButton.getAttribute("data-price")) 
+        addToCart(name, price)
+    }
+})
+
+//Funcao para adicionar no pedido
+function addToCart(name, price){
+    const existingItem = cart.find(item => item.name === name)
+
+    //se o item ja existe, aumenta apenas a quantidade + 1
+    if(existingItem){
+        existingItem.quantity += 1;
+    }else{
+        cart.push({
+            name,
+            price,
+            quantity: 1,
+       })  
+    }
+    updateCartModal()
+  
+}
+//Atualiza o pedido
+function updateCartModal() {
+    cartItemsContainer.innerHTML = "";
+    let total = 0;
+
+    cart.forEach(item => {
+        const cartItemElement = document.createElement("div");
+        cartItemElement.classList.add("flex", "justify-between", "mt-4", "flex-col")
+
+        cartItemElement.innerHTML = `
+            <div class="flex items-center justify-between">
                 <div>
-                    <p class="font-bold"> Hamburger Smash</p>
-                    <p class="text-sm">O hambúrguer (do inglês hamburger), também conhecido como hamburgo,
-                        hamburguesa ou sanduíche de carne, </p>
-                    <div class="flex items-center grap-2 justify-between mt-3">
-                        <p class="font-bold text-lg">MTN 99.99</p>
-                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Hamburger Smash"
-                            data-price="149.99">
-                            <i class="fa fa-cart-plus text-lg text-white"></i>
-                        </button>
-                    </div>
-                </div>
+                   <p class="font-medium">${item.name}</p> 
+                   <p> Quantidade: ${item.quantity}</p> 
+                   <p class="font-medium mt-2">MTN ${item.price.toFixed(2)}</p> 
+                </div> 
+                <button class="remove-form-cart-btn" data-name="${item.name}" title="Remover">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
             </div>
-            <!--FIM PRODUTO ITEM-->
-            <!--PRODUTO ITEM2-->
-            <div class="flex gap-2">
-                <img src="./assets/hamb-2.png" alt="Hamburger Duplo"
-                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
-                <div>
-                    <p class="font-bold"> Hamburger Duplo</p>
-                    <p class="text-sm">O hambúrguer (do inglês hamburger), também conhecido como hamburgo,
-                        hamburguesa ou sanduíche de carne, </p>
-                    <div class="flex items-center grap-2 justify-between mt-3">
-                        <p class="font-bold text-lg">MTN 119.99</p>
-                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Hamburger Duplo"
-                            data-price="119.99">
-                            <i class="fa fa-cart-plus text-lg text-white"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!--FIM PRODUTO ITEM2-->
+        `
+        total += item.price * item.quantity;
+        
+        cartItemsContainer.appendChild(cartItemElement)
+    })
 
-            <!--PRODUTO ITEM3-->
-            <div class="flex gap-2">
-                <img src="./assets/hamb-3.png" alt="Hamburger Duplo"
-                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
-                <div>
-                    <p class="font-bold"> Hamburger Triplo</p>
-                    <p class="text-sm">O hambúrguer (do inglês hamburger), também conhecido como hamburgo,
-                        hamburguesa ou sanduíche de carne, </p>
-                    <div class="flex items-center grap-2 justify-between mt-3">
-                        <p class="font-bold text-lg">MTN 199.99</p>
-                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Hamburger Triplo"
-                            data-price="199.99">
-                            <i class="fa fa-cart-plus text-lg text-white"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!--FIM PRODUTO ITEM3-->
+    cartTotal.textContent = total.toLocaleString("pt-PT", {
+            style: "currency",
+           currency: "MZN"
+        });
+    cartCounter.innerHTML = cart.length;
+}
 
-            <!--PRODUTO ITEM4-->
-            <div class="flex gap-2">
-                <img src="./assets/hamb-4.png" alt="Hamburger Duplo"
-                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
-                <div>
-                    <p class="font-bold"> Prego</p>
-                    <p class="text-sm">O hambúrguer (do inglês hamburger), também conhecido como hamburgo,
-                        hamburguesa ou sanduíche de carne, </p>
-                    <div class="flex items-center grap-2 justify-between mt-3">
-                        <p class="font-bold text-lg">MTN 199.99</p>
-                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Prego" data-price="199.99">
-                            <i class="fa fa-cart-plus text-lg text-white"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!--FIM PRODUTO ITEM4-->
-        </main>
-        <div class="mx-auto max-w-7xl px-2 my-2">
-            <h2 class="font-bold text-3xl">
-                Bebidas
-            </h2>
-        </div>
-        <!--GRID DAS BEBIDAS-->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-10 mx-auto max-w-7xl px-2 mb-16" id="menu">
-            <!--BEBIDA ITEM-->
-            <div class="flex gap-2 w-full">
-                <img src="./assets/refri-1.png" alt="Coca Lata"
-                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
-                <div class="w-full">
-                    <p class="font-bold">Coca Lata</p>
+//funcao para remover o item do pedido
+cartItemsContainer.addEventListener("click", function (event){
+    if(event.target.classList.contains("remove-form-cart-btn")){
+        const name = event.target.getAttribute("data-name")
 
-                    <div class="flex items-center grap-2 justify-between mt-3">
-                        <p class="font-bold text-lg">MTN 44.99</p>
-                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Coca Lata"
-                            data-price="44.99">
-                            <i class="fa fa-cart-plus text-lg text-white"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!--FIM BEBIDA ITEM-->
+        removeItemCart(name);
+    }
+})
 
-            <!--BEBIDA ITEM-->
-            <div class="flex gap-2 w-full">
-                <img src="./assets/refri-2.png" alt="Guarana Lata"
-                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300" />
-                <div class="w-full">
-                    <p class="font-bold">Guarana Lata</p>
+function removeItemCart(name){
+    const index = cart.findIndex(item => item.name === name);
 
-                    <div class="flex items-center grap-2 justify-between mt-3">
-                        <p class="font-bold text-lg">MTN 44.99</p>
-                        <button class="bg-gray-900 px-5 rounded add-to-cart-btn" data-name="Guarana Lata"
-                            data-price="44.99">
-                            <i class="fa fa-cart-plus text-lg text-white"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!--FIM BEBIDA ITEM-->
-        </div>
-        <!--FIM GRID DAS BEBIDAS-->
-    </div>
+    if (index !== -1){
+        const item = cart[index];
 
-    <!--MODAL CART-->
-    <div class="bg-black/60 w-full h-full fixed top-0 left-0 z-50  items-center justify-center hidden" id="cart-modal">
-        <div class="bg-white p-5 rounded-md w-full max-w-[90%] md:max-w-[600px]">
-            <h2 class=" text-center font-bold text-2xl mb-2">Meu Pedido</h2>
-            <div id="cart-items" class="flex justify-between mb-2 flex-col"></div>
+        if(item.quantity > 1){
+            item.quantity -=1;
+            updateCartModal();
+            return;
+        }
+
+        cart.splice(index, 1);
+        updateCartModal();
+    }
+}
+
+//validacao do input
+nameInput.addEventListener("input", function(event){
+    let inputValue = event.target.value;
+
+    if(inputValue !== ""){
+        nameInput.classList.remove("border-red-500")
+        nameWarn.classList.add("hidden")
+    }
+})
+//finalizar Pedido
+checkoutBtn.addEventListener("click", function(){
+
+    // const isOpen = checkRestaurantOpen();
+    // if(!isOpen){
+    //     alert("TAKE AWAY FECHADO NO MOMENTO!")
+    //     return;
+    // }
+    const isOpen = checkRestaurantOpen();
+    if(!isOpen){
+        Toastify({
+            // text: "Ops o take away esta fechado!",
+            text: "Ops! Ainda nao estamos a aceitar encomendas. Aplicacao estara disponivel em breve!",
+            duration: 3000,
             
-            <p class="font-bold mt-4">Total <span id="cart-total">0.00</span></p>
-            <p class="font-bold mt-4">Endereco de entrega</p>
-            <input type="text" placeholder="Digite seu endereco completo..." id="address"
-                class="w-full border-2 p-1 rounded my-1" />
-            <p class="text-red-500 hidden" id="address-warn">Digite seu endereco completo</p>
-            <div class="flex items-center justify-between mt-5 w-full">
-                <button id="close-modal-btn">Fechar</button>
-                <button id="checkout-btn" class="bg-green-500 text-white px-4 py-1 rounded">Finalizar Pedido</button>
-            </div>
-        </div>
-    </div>
-    <!--FIM MODAL CART-->
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: "right", // `left`, `center` or `right`
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+            style: {
+              background: "#ef4444",
+            },
+          }).showToast();
+        return;
+    }
 
-    <!--BUTTON CART FOOTER-->
-    <footer class="w-full bg-red-500 py-3 fixed bottom-0 z-40 flex items-center justify-center">
-        <button class="flex items-center gap-2 text-white font-bold" id="cart-btn">
-            (<span id="cart-count">0</span>)
-            Ver meu Pedido
-            <i class="fa fa-cart-plus text-lg text-white"></i>
-        </button>
-    </footer>
-    <!--FIM BUTTON CART FOOTER-->
-    <script src="./js/script.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-</body>
+    if(cart.length === 0) return;
+    if(nameInput.value === ""){
+        nameWarn.classList.remove("hidden")
+        nameInput.classList.add("border-red-500")
+        return;
+    }
 
-</html>
+    //Enviar pedido do api whats
+//     const cartItems = cart.map((item) => {
+//         return (
+//             `🍔 *${item.name}*\n` +
+//             `   ➤ Quantidade: ${item.quantity}\n` +
+//             `   ➤ Preço unitário: MZN ${item.price}\n` +
+//             `   ➤ Subtotal: MZN ${(item.price * item.quantity).toFixed(2)}\n\n`
+//         );
+//     }).join("");
+    
+//     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+//     const message = encodeURIComponent(
+//         "🛒 *PEDIDO MR. CHICKEN* 🛒\n\n" +
+//         cartItems +
+//         "__________________________________\n" +
+//         `💰 *TOTAL: MZN ${total.toFixed(2)}*\n\n` +
+//         `📝 *Cliente:* ${nameInput.value}\n` +
+//         `📍 *Endereço:* Rua da Costa do sol, Polana Canico "A"\n\n` +
+//         "🕒 *Horário de funcionamento:*\n" +
+//         "Segunda a Domingo - 10:00 às 22:00"
+//     );
+    
+//     const phone = "869937027";
+//     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+    
+//     cart = [];
+//     updateCartModal();
+// })
+// Função para formatar a data atual no formato dd/mm/aaaa
+function getCurrentDateTime() {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} às ${hours}:${minutes}`;
+}
+
+const cartItems = cart.map((item) => {
+    return (
+        `🍔 ${item.name}\n` +
+        `   ├─ Quantidade: ${item.quantity}\n` +
+        `   └─ Preço: MZN ${item.price.toFixed(2).replace('.', ',')}\n\n`
+    );
+}).join("");
+
+const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+const total = subtotal;
+
+const message = encodeURIComponent(
+    `🍗 *TAKE AWAY MR. CHICKEN* 🍗\n\n` +
+    `📍 *Endereço:* Rua da Costa do Sol, Polana Caniço A, Maputo\n` +
+    `📞 *Telefone:* +258 86 993 7027\n` +
+    `📧 *Email:* xxxxxxx@gmail.com\n\n` +
+    `════════════════════\n` +
+    `📋 *DETALHES DO PEDIDO*\n` +
+    `👤 *Cliente:* ${nameInput.value}\n` +
+    `📅 *Data/Hora:* ${getCurrentDateTime()}\n\n` +
+    `════════════════════\n` +
+    `🛒 *ITENS DO PEDIDO*\n${cartItems}\n` +
+    `════════════════════\n` +
+    `💲 *Subtotal:* MZN ${subtotal.toFixed(2).replace('.', ',')}\n` +
+    `💰 *Total a Pagar:* MZN ${total.toFixed(2).replace('.', ',')}\n\n` +
+    `════════════════════\n` +
+    `💳 *FORMAS DE PAGAMENTO*\n` +
+    `📱 *Mpesa:* 19156 – Banca Muabsa\n` +
+    `💸 *Emola:* 45963 – Banca Muabsa\n\n` +
+    `════════════════════\n` +
+    `🙏 *Agradecemos a sua preferência!*\n` +
+    `🍟 *Volte sempre ao Mr. Chicken!*`
+);
+
+const phone = "869937027";
+window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+
+cart = [];
+updateCartModal();
+})
+//     const cartItems = cart.map((item) => {
+//         return (
+//             `${item.name} Quantidade: (${item.quantity}) Preco: MZN${item.price} |`
+//         )
+//     }).join("")
+
+//     const message = encodeURIComponent(cartItems)
+//     const phone = "869937027"
+
+//     window.open(`https://wa.me/${phone}?text=${message} Nome: ${nameInput.value}`, "_blank")
+
+//     cart = [];
+//     updateCartModal();
+// })
+
+// Função para verificar se o restaurante está aberto
+function checkRestaurantOpen() {
+    const data = new Date(); 
+    const hora = data.getHours();
+
+    // Retorna true se o restaurante estiver aberto, false caso contrário
+    return hora >= 10 && hora < 22;
+}
+
+// Função para atualizar a interface do usuário com base no status do restaurante
+function updateRestaurantStatus() {
+    const spanItem = document.getElementById("date-span");
+    const isOpen = checkRestaurantOpen(); // Chama a função para verificar se está aberto
+
+    if (isOpen) {
+        spanItem.classList.remove("bg-red-500" );
+        spanItem.classList.add("bg-green-600");
+    } else {
+        spanItem.classList.remove("bg-green-600");
+        spanItem.classList.add("bg-red-500");
+    }
+}
+
+// Chamar a função para atualizar o status do restaurante na interface do usuário
+updateRestaurantStatus();
