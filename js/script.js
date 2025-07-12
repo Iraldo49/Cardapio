@@ -6,8 +6,8 @@ const cartTotal = document.getElementById("cart-total")
 const checkoutBtn = document.getElementById("checkout-btn")
 const closeModalBtn = document.getElementById("close-modal-btn")
 const cartCounter = document.getElementById("cart-count")
-const addressInput = document.getElementById("address")
-const addressWarn = document.getElementById("address-warn")
+const nameInput = document.getElementById("name")
+const nameWarn = document.getElementById("name-warn")
 
 let cart = [];
 
@@ -68,13 +68,12 @@ function updateCartModal() {
             <div class="flex items-center justify-between">
                 <div>
                    <p class="font-medium">${item.name}</p> 
-                   <p> Qtd: ${item.quantity}</p> 
+                   <p> Quantidade: ${item.quantity}</p> 
                    <p class="font-medium mt-2">MTN ${item.price.toFixed(2)}</p> 
                 </div> 
-                
-                    <button class="remove-form-cart-btn" data-name="${item.name}">
-                        Remover
-                    </button>
+                <button class="remove-form-cart-btn" data-name="${item.name}" title="Remover">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
             </div>
         `
         total += item.price * item.quantity;
@@ -116,12 +115,12 @@ function removeItemCart(name){
 }
 
 //validacao do input
-addressInput.addEventListener("input", function(event){
+nameInput.addEventListener("input", function(event){
     let inputValue = event.target.value;
 
     if(inputValue !== ""){
-        addressInput.classList.remove("border-red-500")
-        addressWarn.classList.add("hidden")
+        nameInput.classList.remove("border-red-500")
+        nameWarn.classList.add("hidden")
     }
 })
 //finalizar Pedido
@@ -135,7 +134,8 @@ checkoutBtn.addEventListener("click", function(){
     const isOpen = checkRestaurantOpen();
     if(!isOpen){
         Toastify({
-            text: "Ops o restaurante esta fechado!",
+            // text: "Ops o take away esta fechado!",
+            text: "Ops! Ainda nao estamos a aceitar encomendas. Aplicacao estara disponivel em breve!",
             duration: 3000,
             
             close: true,
@@ -150,35 +150,114 @@ checkoutBtn.addEventListener("click", function(){
     }
 
     if(cart.length === 0) return;
-    if(addressInput.value === ""){
-        addressWarn.classList.remove("hidden")
-        addressInput.classList.add("border-red-500")
+    if(nameInput.value === ""){
+        nameWarn.classList.remove("hidden")
+        nameInput.classList.add("border-red-500")
         return;
     }
 
     //Enviar pedido do api whats
-    const cartItems = cart.map((item) => {
-        return (
-            `${item.name} Quantidade: (${item.quantity}) Preco: MZN${item.price} |`
-        )
-    }).join("")
+//     const cartItems = cart.map((item) => {
+//         return (
+//             `🍔 *${item.name}*\n` +
+//             `   ➤ Quantidade: ${item.quantity}\n` +
+//             `   ➤ Preço unitário: MZN ${item.price}\n` +
+//             `   ➤ Subtotal: MZN ${(item.price * item.quantity).toFixed(2)}\n\n`
+//         );
+//     }).join("");
+    
+//     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+//     const message = encodeURIComponent(
+//         "🛒 *PEDIDO MR. CHICKEN* 🛒\n\n" +
+//         cartItems +
+//         "__________________________________\n" +
+//         `💰 *TOTAL: MZN ${total.toFixed(2)}*\n\n` +
+//         `📝 *Cliente:* ${nameInput.value}\n` +
+//         `📍 *Endereço:* Rua da Costa do sol, Polana Canico "A"\n\n` +
+//         "🕒 *Horário de funcionamento:*\n" +
+//         "Segunda a Domingo - 10:00 às 22:00"
+//     );
+    
+//     const phone = "869937027";
+//     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+    
+//     cart = [];
+//     updateCartModal();
+// })
+// Função para formatar a data atual no formato dd/mm/aaaa
+function getCurrentDateTime() {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} às ${hours}:${minutes}`;
+}
 
-    const message = encodeURIComponent(cartItems)
-    const phone = "822937027"
+const cartItems = cart.map((item) => {
+    return (
+        `🍔 ${item.name}\n` +
+        `   ├─ Quantidade: ${item.quantity}\n` +
+        `   └─ Preço: MZN ${item.price.toFixed(2).replace('.', ',')}\n\n`
+    );
+}).join("");
 
-    window.open(`https://wa.me/${phone}?text=${message} Endereco: ${addressInput.value}`, "_blank")
+const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+const total = subtotal;
 
-    cart = [];
-    updateCartModal();
+const message = encodeURIComponent(
+    `🍗 *TAKE AWAY MR. CHICKEN* 🍗\n\n` +
+    `📍 *Endereço:* Rua da Costa do Sol, Polana Caniço A, Maputo\n` +
+    `📞 *Telefone:* +258 86 993 7027\n` +
+    `📧 *Email:* xxxxxxx@gmail.com\n\n` +
+    `════════════════════\n` +
+    `📋 *DETALHES DO PEDIDO*\n` +
+    `👤 *Cliente:* ${nameInput.value}\n` +
+    `📅 *Data/Hora:* ${getCurrentDateTime()}\n\n` +
+    `════════════════════\n` +
+    `🛒 *ITENS DO PEDIDO*\n${cartItems}\n` +
+    `════════════════════\n` +
+    `💲 *Subtotal:* MZN ${subtotal.toFixed(2).replace('.', ',')}\n` +
+    `💰 *Total a Pagar:* MZN ${total.toFixed(2).replace('.', ',')}\n\n` +
+    `════════════════════\n` +
+    `💳 *FORMAS DE PAGAMENTO*\n` +
+    `📱 *Mpesa:* 19156 – Banca Muabsa\n` +
+    `💸 *Emola:* 45963 – Banca Muabsa\n\n` +
+    `════════════════════\n` +
+    `🙏 *Agradecemos a sua preferência!*\n` +
+    `🍟 *Volte sempre ao Mr. Chicken!*`
+);
+
+const phone = "869937027";
+window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+
+cart = [];
+updateCartModal();
 })
+//     const cartItems = cart.map((item) => {
+//         return (
+//             `${item.name} Quantidade: (${item.quantity}) Preco: MZN${item.price} |`
+//         )
+//     }).join("")
+
+//     const message = encodeURIComponent(cartItems)
+//     const phone = "869937027"
+
+//     window.open(`https://wa.me/${phone}?text=${message} Nome: ${nameInput.value}`, "_blank")
+
+//     cart = [];
+//     updateCartModal();
+// })
 
 // Função para verificar se o restaurante está aberto
 function checkRestaurantOpen() {
-    const data = new Date();
+    const data = new Date(); 
     const hora = data.getHours();
 
     // Retorna true se o restaurante estiver aberto, false caso contrário
-    return hora >= 18 && hora < 22;
+    return hora >= 10 && hora < 22;
 }
 
 // Função para atualizar a interface do usuário com base no status do restaurante
@@ -187,7 +266,7 @@ function updateRestaurantStatus() {
     const isOpen = checkRestaurantOpen(); // Chama a função para verificar se está aberto
 
     if (isOpen) {
-        spanItem.classList.remove("bg-red-500");
+        spanItem.classList.remove("bg-red-500" );
         spanItem.classList.add("bg-green-600");
     } else {
         spanItem.classList.remove("bg-green-600");
